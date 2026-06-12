@@ -1,0 +1,216 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Official template for the Master's Research Project Proposal        %%
+%% of the Master AI and Master CCS of the University of Groningen (NL) %%
+%% Version: March 2026                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[12pt]{article}
+\usepackage{graphicx} % Use for Images
+\usepackage{here}     % Forced Figure Placement
+\usepackage{pslatex}  % Use PostScript Fonts
+\usepackage{apacite}  % Use APA Citation
+\usepackage{fancyhdr} % Use headers
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[
+	top    = 2.00cm,
+	bottom = 2.50cm,
+	left   = 3.00cm,
+	right  = 2.50cm,
+	includeheadfoot]{geometry} 
+
+\setlength{\headheight}{55pt}
+
+% Define the page styles
+\fancypagestyle{titlepage}{
+	\fancyhf{}
+    \renewcommand{\headrulewidth}{0pt}
+	\fancyhead[C]{\includegraphics[width=100]{Mathnatlogo.png}}
+}
+
+
+
+% Begin the actual document
+\begin{document}
+
+\title{{\bf Design, Implementation and Evaluation of an Application-Derived Dynamic Voltage and Frequency Scaling Heuristic for Energy-Efficient GPU-Based High-Performance Computing Workloads}}
+
+\author{Sten Heimbrodt \\ (798761)}
+
+\maketitle
+\thispagestyle{titlepage}
+
+\bigskip
+\begin{center}
+\textbf{Master's Thesis Project Proposal}\\
+% Only leave the programme you are in:
+\emph{Betriebssysteme und Rechnernetze / Computational Science\\
+ Universität Potsdam}
+\end{center}
+
+\vfill
+\begin{flushleft}
+
+% Note: check the correct title in the staff member's page on the UG website
+Supervisor: Prof. Dr. Bettina Schnor (Lehrstuhl Betriebssysteme und Rechnernetze, University of Potsdam) \\
+\bigskip
+\end{flushleft}
+
+\begin{flushright}
+
+\Large\bf
+
+\end{flushright}
+
+\newpage
+
+\section{Introduction}
+
+Since the explosion of AI, many hyperscalers, as well as research institutions, heavily invest in GPU based research and model training. Hardware manufacturers thus lean very heavily into broad vector and matrix centric calculation accelerators, most notably Graphics-Processing-Units. Given that the market demand mostly focuses on maximum performance per dollar, many other key factors are not considered, such as energy efficiency. However, not all calculations need to be run at the best performance; they can also be run at the most optimal balance between performance and energy cost. The ever growing cost and demand for energy propose the necessity to also optimise for said factors. The goal of this work is to create a Python based framework that implements different energy optimisation algorithms and uses them to adjust the GPUs Voltage and frequency settings to create a proper balance. The idea is to optimise for a key that, as opposed to traditional methods, gathers its information from the application itself. This means that optimisation keys can be determined by the developer of the scientific application and thus are easily changeable during runtime as well as the development cycle.
+
+\section{Theoretical Framework}
+
+The underlying problem is a classical mathematical optimisation problem. Only a few parameters are needed to decide on the next iteration steps to change the GPU parameters since the key comes from the application itself. A simple example would be:
+\begin{itemize}
+    \item $f_t \in \mathbb{R}$: GPU frequency (MHz) at time step $t$
+    \item $k \in \{\text{key}, \text{runtime}\}$: optimisation metric
+    \item $R(f_t, k)$: performance evaluation function (higher is better)
+    \item $t \in \mathbb{N}$: iteration index of the optimisation process
+\end{itemize}
+
+\textbf{Objective:}
+
+\[
+f^{*} = \arg\max_f \; R(f, k)
+\]
+
+\textbf{Update rule (discrete hill-climbing):}
+
+\[
+f_{t+1} =
+\begin{cases}
+f_t + 50 & \text{if } R(f_t, k) > R(f_{t-1}, k) \\
+f_t - 50 & \text{otherwise}
+\end{cases}
+\]
+Here, a simple step function is used, which by itself brings some problems, such as a high amount of jittering around the local minimum, to the table.
+
+\section{Possible Research Question}
+ \begin{itemize}
+     \item 
+ \end{itemize}
+
+\section{Methods}
+
+\section{Scientific Relevance for HPC}
+
+
+\section{Planning}
+
+The planning should indicate what the work parts of the graduation project are and when you expect to complete these work parts. Note that a time planning that is more specific is probably better (provided that you try to stick to it).
+
+\begin{itemize}
+\item WP1 Writing my literature study and project overview. Think of and discuss game concepts.
+\item WP2 Make and discuss mock ups of the games.
+\item WP3 Test and discuss games.
+\item WP4 Implement the actual games.
+\item WP5 Run experiments.
+\item WP6 Buffer.
+\item WP7 Finish company-related matters.
+\item WP8 Write thesis.
+\end{itemize}
+
+\begin{figure}[htb]
+\centering
+\normalsize
+\begin{picture}(338,127)
+% Bounding Box (Adjust when adding extra weeks/work parts)
+\thicklines
+\put(0,127){\line(1,0){338}}						%Horizontal Bounding Box (Top)
+\put(0,0){\line(1,0){338}}							%Horizontal Bounding Box (Bottom)
+\put(0,0){\line(0,1){127}}							%Vertical Bounding Box (Left)
+\put(338,0){\line(0,1){127}}						%Vertical Bounding Box (Right)
+\thinlines
+% Table Lines (Adjust when adding extra weeks/work parts)
+\multiput(41,0)(9,0){32}{\line(0,1){2}} %Ticks at the bottom of the table
+\put(0,127){\line(5,-2){32}}						%Slanted line in the table
+\put(32,115){\line(1,0){306}}						%Vertical Week Bounding Box (Top)
+\put(32,103){\dashbox{0.5}(306,0){}}		%Vertical Week Bounding Box (Bottom)
+\put(32,0){\line(0,1){115}}							%Week Line 1
+%\put(104,0){\line(0,1){103}}						%Week Line 2  (removed due to Christmas holiday)
+\put(176,0){\line(0,1){103}}						%Week Line 3
+\put(248,0){\line(0,1){103}}						%Week Line 4
+\thicklines
+% Week Indicators (Adjust when adding extra weeks)
+% Adding an extra week requires you to move every part 9 points to the side
+% As the table works with 2 weeks for each \put, this usually means adding 18 points
+\put(159,117){Weeks}
+\put(32,105){0}
+\put(50,105){2}
+\put(68,105){4}
+\put(86,105){6}
+\put(104,105){8}
+\put(122,105){10}
+\put(140,105){12}
+\put(158,105){14}
+\put(176,105){16}
+\put(194,105){18}
+\put(212,105){20}
+\put(230,105){22}
+\put(248,105){24}
+\put(266,105){26}
+\put(284,105){28}
+\put(302,105){30}
+\put(320,105){32}
+% -------------------------------------------------
+% Work parts (If you have 8 work parts, you only have to make adjustments here)
+% Adjust when adding extra work parts
+% Adding an extra work part requires you to move every part 12 points up
+\put(2,90){WP1}
+\put(2,78){WP2}
+\put(2,66){WP3}
+\put(2,54){WP4}
+\put(2,42){WP5}
+\put(2,30){WP6}
+\put(2,18){WP7}
+\put(2,6){WP8}
+% The bars are the argument for \line (1 week is 9pt)
+% The first argument for put is the bar start; the second argument for put is the bar height (do not adjust this if you are not adding/deleting work parts)
+\linethickness{3mm}
+\put(32,94){\line(1,0){36}} % WP 1
+\put(68,82){\line(1,0){27}} % WP 2
+% The student has his Christmas holiday planned around this moment
+%----
+\thinlines
+\put(95,0){\line(0,1){103}}																%Vertical Bounding Box (Left)
+\put(113,0){\line(0,1){103}}															%Vertical Bounding Box (Right)
+\put(98,100){\rotatebox{270}{\textit{Christmas Holidays}}}%Add the Christmas holidays
+%----
+% Resuming regular schedule
+\linethickness{3mm}
+\put(113,70){\line(1,0){9}}  % WP 3
+\put(122,58){\line(1,0){81}} % WP 4
+\put(203,46){\line(1,0){45}} % WP 5
+\put(248,34){\line(1,0){18}} % WP 6
+\put(266,22){\line(1,0){18}} % WP 7
+\put(284,10){\line(1,0){54}} % WP 8
+\end{picture}
+\caption{\label{bar}Duration of Work Parts}
+\end{figure}
+
+\section{Resources and Support}
+
+Use this paragraph to describe the resources and support of the place at which you will perform your graduation project. Will you be able to work at a PC? Did you secure the rights to work with the laboratory setup you require? What will the day-to-day supervision be like? Indicate how well you have discussed these things with your supervisors. Did you have to agree on confidentiality (``officiële geheimhoudingsplicht'')? Also indicate whether you expect to require a work station provided by the department (limited space). 
+
+\bibliographystyle{apacite}
+\setlength{\bibleftmargin}{.125in}
+\setlength{\bibindent}{-\bibleftmargin}
+\bibliography{biblio}
+\noindent Example Reference 1 is about a study describing how to have a good day \cite{ackley1985day}.\\
+Example Reference 2 is about the robotics research by Gardner \citeyear{gardner2008structure}, that shows the structure of metastable systems.
+
+\bigskip
+\hrule
+\center{\textit{(Try to keep your project proposal within 5 pages)}}
+
+
+\end{document}
