@@ -71,13 +71,16 @@ This project investigates an application-derived approach to dynamic voltage and
 
 \section{Introduction}
 
-Since the explosion of AI, many hyperscalers, as well as research institutions, heavily invest in GPU based research and model training. Hardware manufacturers thus lean very heavily into broad vector and matrix centric calculation accelerators, most notably Graphics-Processing-Units. Given that the market demand mostly focuses on maximum performance per dollar, many other key factors are not considered, such as energy efficiency. However, not all calculations need to be run at the best performance; they can also be run at the most optimal balance between performance and energy cost. The ever growing cost and demand for energy propose the necessity to also optimise for said factors. The goal of this work is to create a Python based framework that implements different energy optimisation algorithms and uses them to adjust the GPUs Voltage and frequency settings to create a proper balance. The idea is to optimise for a key that, as opposed to traditional methods, gathers its information from the application itself. This means that optimisation keys can be determined by the developer of the scientific application and thus are easily changeable during runtime as well as the development cycle.
+Since the explosion of AI, many hyperscalers, as well as research institutions, heavily invest in GPU based research and model training. Hardware manufacturers thus lean very heavily into broad vector and matrix centric calculation accelerators, most notably Graphics-Processing-Units. Given that the market demand mostly focuses on maximum performance per dollar, many other key factors are not considered, such as energy efficiency. However, not all calculations need to be run at the best performance; they can also be run at the most optimal balance between performance and energy cost. The ever growing cost and demand for energy propose the necessity to also optimise for said factors. The goal of this work is to create a Python based framework that implements different energy optimisation algorithms and uses them to adjust the GPUs Voltage and frequency settings to create a proper balance. The idea is to optimise for a key that, as opposed to traditional methods, gathers its information from the application itself. This means that optimisation keys can be determined by the developer of the scientific application and thus are easily changeable during runtime as well as throughout the development cycle.
 \section{Related Work}
 \subsection{COUNTDOWN: a Run-time Library for Performance-Neutral Energy Saving in MPI Applications}
+The COUNTDOWN research group targets energy savings primarily through communication and synchronisation in the MPI framework. Its core idea is to improve classical static DVFS by implementing a runtime that identifies certain communication patterns. This work is very interesting for this project since it follows the same runtime driven approach. However, it is only partially application informed because it still tries to derive computationally intensive regions by itself.
 \subsection{A Data-Driven Frequency Scaling Approach for Deadline-aware Energy Efficient Scheduling on Graphics Processing Units}
 \subsection{A smart energy and reliability aware scheduling algorithm for workflow execution in DVFS-enabled cloud enviornment}
 \subsection{Methodology for GPU Frequency Switching Latency Measurement}
+This work focuses on the latency that is needed to complete a frequency shifting cycle. They implement an array of experiments in order to achieve an accurate estimation of the underlying roofline value that is needed for frequency shifting. Also, it incorporates a similar model to this project since it uses the neighbouring CPU as the control unit. Additionally, the knowledge about said frequency changing latencies can be incorporated into later architectural decisions.
 \subsection{Application-aware Memory System for Fair and Efficient Execution of Concurrent GPGPU Applications}
+This joint work of some Nvidia and Intel engineers is rather peripherally interesting, but nevertheless still shows some correlation to this project. Their main goal is to not only allow multiple kernels to run in parallel but also to allow multiple applications to run in parallel. This poses some problems, as it now needs to be determined from the view of the runtime where the corresponding memory actually lies. The efficiency is consequently calculated by the overall throughput that is achieved.
 \section{Theoretical Framework}
 
 The underlying problem is a classical mathematical optimisation problem. Only a few parameters are needed to decide on the next iteration steps to change the GPU parameters since the key comes from the application itself. A simple example would be:
@@ -105,7 +108,7 @@ f_t - 50 & \text{otherwise}
 \]
 Here, a simple step function is used, which brings some problems by itself, such as a high amount of jitter around the local minimum.
 \section{Traditional Approach and Key Innovations}
-Traditionally, DVFS systems rely on the input variables of the current power draw, temperature, and resource utilisation. This introduces the problem that these variables sometimes do not directly influence the actual problem as strongly as they scale up the power draw. This highlights the need for a better heuristic that is directly linked to the actual application performance. Since this is only possible by explicitly stating these variables during runtime, it needs to be incorporated by the developer. The key innovation of this work is a novel optimisation algorithm that uses a combination of traditional optimisers such as gradient descent and tries to measure its performance in comparison to other optimisation functions.
+Traditionally, DVFS systems rely on the input variables of the current power draw, temperature, and resource utilisation. This introduces the problem that these variables sometimes do not directly influence the actual problem as strongly as they scale up the power draw. This highlights the need for a better heuristic that is directly linked to the actual application performance. Since this is only possible by explicitly stating these variables during runtime, it needs to be incorporated by the developer. The key innovation of this work is a novel optimisation algorithm that uses a combination of traditional optimisers, such as gradient descent, and tries to measure its performance in comparison to other optimisation functions.
 
 \section{Possible Research Question}
  \begin{itemize}
@@ -119,23 +122,21 @@ The main methodology will be the implementation and evaluation of different ener
 
 \section{Planning}
 
-The planning should indicate what the work parts of the graduation project are and when you expect to complete these work parts. Note that a time plan that is more specific is probably better (provided that you try to stick to it).
-
-\begin{itemize}
-\item WP1 Literature Review and Related Work
-\item WP2 Profiling of different GPUs
-\item WP3 Test and discuss games.
-\item WP4 Implement the actual games.
-\item WP5 Run experiments.
-\item WP6 Buffer.
-\item WP7 Finish company-related matters.
-\item WP8 Write thesis.
-\end{itemize}
+\begin{enumerate}
+\item Literature Review and Related Work
+\item Profiling of different GPUs
+\item Implementation of profiling measurement toolkit
+\item Design of Optimiser Function
+\item Implementation of Optimisation Framework
+\item Selection of common model benchmarks
+\item Taking Measurements and Evaluation
+\item Write the thesis.
+\end{enumerate}
 
 
 
 \section{Resources and Support}
-One of the key research aspects will be to run experimentation on a lot of ML-Algorithms as well as different GPUs. To accomplish this a collection of suitable models will be created. Since hardware is relatively expensive a bootstick will be created that runs the suite of experiments to allow for quick experimentation on different computers.
+One of the key research aspects will be to run experiments on many ML-Algorithms as well as different GPUs. To accomplish this, a collection of suitable models will be created. Since hardware is relatively expensive, a boot stick will be created that runs the suite of experiments to allow for quick experimentation on different computers.
 
 
 
