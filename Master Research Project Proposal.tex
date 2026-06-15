@@ -11,6 +11,7 @@
 \usepackage{fancyhdr} % Use headers
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{minted}
 \usepackage[
 	top    = 2.00cm,
 	bottom = 2.50cm,
@@ -76,11 +77,13 @@ Since the explosion of AI, many hyperscalers, as well as research institutions, 
 \subsection{COUNTDOWN: a Run-time Library for Performance-Neutral Energy Saving in MPI Applications}
 The COUNTDOWN research group targets energy savings primarily through communication and synchronisation in the MPI framework. Its core idea is to improve classical static DVFS by implementing a runtime that identifies certain communication patterns. This work is very interesting for this project since it follows the same runtime driven approach. However, it is only partially application informed because it still tries to derive computationally intensive regions by itself.
 \subsection{A Data-Driven Frequency Scaling Approach for Deadline-aware Energy Efficient Scheduling on Graphics Processing Units}
+This work advises a classification of different energy optimisation approaches. It differentiates between analytical models that, according to the authors, use the mathematical relationships between certain components and variables in a given system. Secondly, they propose static models that use metrics like source code evaluation and hardware definitions for energy profiling. Lastly, machine learning approaches are mentioned. They use a set of input variables and try to model energy profiles as well as runtime as closely as possible based on a set of training data. This poses a different set of problems since it is hard to guarantee that novel algorithms will indeed work similarly, or at least in some aspects similar to the algorithms used during training.
 \subsection{A smart energy and reliability aware scheduling algorithm for workflow execution in DVFS-enabled cloud enviornment}
+This work presents a very complex variant of DVFS that enables energy optimisation in a cloud environment consisting of multiple Virtual Machines that run on a single host machine. It also incorporates a deadline based algorithm to guarantee that the workload will be finished by a given time point for the user. This opens up a lot of room for optimisation since it allows for overlapping workloads and a meta workload analysis in the sense that an independent scheduling order is possible.
 \subsection{Methodology for GPU Frequency Switching Latency Measurement}
 This work focuses on the latency that is needed to complete a frequency shifting cycle. They implement an array of experiments in order to achieve an accurate estimation of the underlying roofline value that is needed for frequency shifting. Also, it incorporates a similar model to this project since it uses the neighbouring CPU as the control unit. Additionally, the knowledge about said frequency changing latencies can be incorporated into later architectural decisions.
 \subsection{Application-aware Memory System for Fair and Efficient Execution of Concurrent GPGPU Applications}
-This joint work of some Nvidia and Intel engineers is rather peripherally interesting, but nevertheless still shows some correlation to this project. Their main goal is to not only allow multiple kernels to run in parallel but also to allow multiple applications to run in parallel. This poses some problems, as it now needs to be determined from the view of the runtime where the corresponding memory actually lies. The efficiency is consequently calculated by the overall throughput that is achieved.
+This joint work of some Nvidia and Intel engineers is rather peripherally interesting, but nevertheless still shows some correlation to this project. Their main goal is not only to allow multiple kernels to run in parallel but also to allow multiple applications to run concurrently. This poses some problems, as it now needs to be determined from the viewpoint of the runtime where the corresponding memory actually lies. The efficiency is consequently calculated by the overall throughput that is achieved.
 \section{Theoretical Framework}
 
 The underlying problem is a classical mathematical optimisation problem. Only a few parameters are needed to decide on the next iteration steps to change the GPU parameters since the key comes from the application itself. A simple example would be:
@@ -106,10 +109,10 @@ f_t + 50 & \text{if } R(f_t, k) > R(f_{t-1}, k) \\
 f_t - 50 & \text{otherwise}
 \end{cases}
 \]
-Here, a simple step function is used, which brings some problems by itself, such as a high amount of jitter around the local minimum.
+Here, a simple step function is used, which brings some problems by itself, such as a high amount of jitter around the local minimum. Later in this work, a new algorithm will be proposed that incorporates a profiling mechanism to scan a GPU in regard to a specific algorithm and then decide on an energy optimal frequency and voltage setting.
 \section{Traditional Approach and Key Innovations}
-Traditionally, DVFS systems rely on the input variables of the current power draw, temperature, and resource utilisation. This introduces the problem that these variables sometimes do not directly influence the actual problem as strongly as they scale up the power draw. This highlights the need for a better heuristic that is directly linked to the actual application performance. Since this is only possible by explicitly stating these variables during runtime, it needs to be incorporated by the developer. The key innovation of this work is a novel optimisation algorithm that uses a combination of traditional optimisers, such as gradient descent, and tries to measure its performance in comparison to other optimisation functions.
-
+Traditionally, DVFS systems rely on the input variables of the current power draw, temperature, and resource utilisation. This introduces the problem that these variables sometimes do not directly influence the actual problem as strongly as they scale up the power draw. This highlights the need for a better heuristic that is directly linked to the actual application performance. Since this is only possible by explicitly stating these variables during runtime, it needs to be incorporated by the developer. The key innovation of this work is a novel optimisation algorithm that uses a combination of traditional optimisers, such as gradient descent, and attempts to measure its performance in comparison to other optimisation functions. The key difference, though, is that the application informed heuristic allows for much closer and better optimisation of the actual model training.
+\section{Research Gap and Objectives}
 \section{Possible Research Question}
  \begin{itemize}
      \item How effective is application-derived runtime information in improving DVFS decisions for GPU-based deep learning training workloads compared to system-level DVFS policies?
@@ -119,7 +122,20 @@ Traditionally, DVFS systems rely on the input variables of the current power dra
 
 \section{Methods}
 The main methodology will be the implementation and evaluation of different energy saving optimisers. The research field in that regard is relatively sparse, meaning there is a lot of room for improvement. In addition to that, most research focuses on large-scale applications, whereas this work is more targeted toward the small, research-focused models used in most biology, geo-science, physics, etc.
-
+Another unique feature of this project will be the ease of use in integrating energy optimisation in a very simple manner:
+\begin{minted}{python}
+def train():
+    with GreenTorch() as gt:
+        while training_loop:
+            # Training steps
+            gt.key = 1 / time_diff
+            gt.optimise()
+\end{minted}
+The context manager initiates a background analysis thread that continuously monitors GPU energy consumption and runtime performance metrics.
+Application-specific optimisation signals are communicated to GreenTorch through a user-defined key. This key represents a runtime metric that should be maximised and must be closely related to the application's performance objective. Suitable examples include training throughput metrics such as batches per second or samples per second.
+To ensure meaningful optimisation, the selected metric should be measurable at runtime, available at fine-grained intervals, and robust against short-term fluctuations.
+For prototyping purposes, the framework utilises the LACT project to access GPU telemetry and modify GPU operating parameters, including frequency and, where supported, voltage settings. LACT provides a hardware abstraction layer implemented in Rust that exposes a unified interface to underlying GPU driver stacks while offering access to hardware metadata and control functionality.
+The current implementation focuses on a single GPU backend to ensure reproducibility and limit system complexity. Support for additional vendor-specific interfaces, such as native AMD and NVIDIA driver APIs, is considered future work.
 \section{Planning}
 
 \begin{enumerate}
@@ -136,7 +152,7 @@ The main methodology will be the implementation and evaluation of different ener
 
 
 \section{Resources and Support}
-One of the key research aspects will be to run experiments on many ML-Algorithms as well as different GPUs. To accomplish this, a collection of suitable models will be created. Since hardware is relatively expensive, a boot stick will be created that runs the suite of experiments to allow for quick experimentation on different computers.
+One of the key research aspects will be to run experiments on many ML-Algorithms as well as different GPUs. To accomplish this, a collection of suitable models will be created. Since hardware is relatively expensive, a boot stick will be created that runs the suite of experiments to allow for quick experimentation on different computers as well as the hardware of the GPU cluster machines of the University of Potsdam HPC resources.
 
 
 
