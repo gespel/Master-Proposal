@@ -112,12 +112,18 @@ f_t - 50 & \text{otherwise}
 Here, a simple step function is used, which brings some problems by itself, such as a high amount of jitter around the local minimum. Later in this work, a new algorithm will be proposed that incorporates a profiling mechanism to scan a GPU in regard to a specific algorithm and then decide on an energy optimal frequency and voltage setting.
 \section{Traditional Approach and Key Innovations}
 Traditionally, DVFS systems rely on the input variables of the current power draw, temperature, and resource utilisation. This introduces the problem that these variables sometimes do not directly influence the actual problem as strongly as they scale up the power draw. This highlights the need for a better heuristic that is directly linked to the actual application performance. Since this is only possible by explicitly stating these variables during runtime, it needs to be incorporated by the developer. The key innovation of this work is a novel optimisation algorithm that uses a combination of traditional optimisers, such as gradient descent, and attempts to measure its performance in comparison to other optimisation functions. The key difference, though, is that the application informed heuristic allows for much closer and better optimisation of the actual model training.
-\section{Research Gap and Objectives}
+\section{Research Gap}
+The biggest research gap is the application blindness. Most other approaches focus mainly on a system level and do not further incorporate the application layer. This systems level signal is very indirect and leaves the actual algorithm as a black box. As a result, the implemented governors are fairly detached from the actual runtime. Works like the COUNTDOWN show that a dynamic approach with application is possible while they still try to infer optimisation options via communication patterns rather than information from the application itself.\newline
+Another key aspect is the target user group. Almost every related work focuses on large-scale applications and hyperscalers, given that they represent the most profitable market, of course. However, small Research Models for experimentation and research should also be taken into account, since there is plenty of room for optimisation, and decentralised applications still make up a huge portion of energy consumption.
+\newline
+The third tangent that shows no real evaluation is the impact of different levels of granularity for energy optimisation calls in a training context. It needs to be determined whether to change the DVFS values based on a batch level or an epoch level. This is very interesting for deep learning applications since these tend to run for a long time and thus offer a lot of room for frequency and voltage changes. 
+
 \section{Possible Research Question}
  \begin{itemize}
-     \item How effective is application-derived runtime information in improving DVFS decisions for GPU-based deep learning training workloads compared to system-level DVFS policies?
-     \item How does an application-aware DVFS policy compare to default GPU power management strategies in terms of energy consumption and performance?
-     \item What is the impact of control granularity (epoch-level vs batch-level DVFS adjustments) on the stability and performance of GPU training workloads?
+     \item To what extent can developer-defined, application-layer performance metrics serve as effective control signals for GPU DVFS, and how do the resulting energy-performance trade-offs compare to system-level DVFS governors?
+     \item Does DVFS control granularity — batch-level versus epoch-level adjustment — significantly affect training throughput stability and net energy savings in GPU-based deep learning workloads?
+     \item What is the instrumentation and control overhead introduced by the GreenTorch framework, and under what conditions does it outweigh the energy savings achieved?
+     \item How sensitive is the proposed heuristic to the choice of application-defined optimisation key, and what properties must a metric satisfy to yield stable and meaningful DVFS control?
  \end{itemize}
 
 \section{Methods}
